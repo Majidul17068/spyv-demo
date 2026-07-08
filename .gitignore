@@ -1,0 +1,8 @@
+.env
+.env.local
+venv/
+.venv/
+__pycache__/
+*.pyc
+spyv_scan_report.json
+.DS_Store
