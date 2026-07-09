@@ -41,7 +41,7 @@ need no API key at all:
 | `python redteam_demo.py` | ✅ yes | fire the OWASP attack corpus |
 | `python live_demo.py` | ✅ yes | interactive attack chat |
 
-## ⭐ Live demo (best for recording)
+## ⭐ Live demo
 
 ```bash
 python live_demo.py
