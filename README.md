@@ -14,7 +14,29 @@ cp .env.example .env      # then paste your OpenAI key into .env
 
 Your key lives only in `.env`, which is gitignored — it is never committed.
 
-## ▶ Try your own prompt (start here)
+## ▶ Start here: the whole toolkit against one live agent
+
+```bash
+python live_suite.py          # no API key needed
+```
+
+`live_agent.py` is a real agent — system prompt, tool registry, dispatch loop,
+conversation memory. `live_suite.py` runs it through a real conversation and
+then points every spyv capability at that same running subject:
+
+1. **run it** — a genuine conversation, with genuine tool calls
+2. **observe it** — which prompts actually reached the model, captured live
+3. **check what it said** — deterministic checkers on real output
+4. **check what it did** — tool-call policy on the real call trace
+5. **check what's readable** — how much prompt surface a scanner can even see
+6. **fix and gate** — harden the prompt, watch breaches and violations go to zero
+
+Because every step examines the same agent, the findings connect instead of
+sitting in unrelated examples. Set `OPENAI_API_KEY` for real completions; without
+one the replies are scripted, but the message objects are still constructed, so
+step 2 observes real prompt construction either way.
+
+## ▶ Try your own prompt
 
 ```bash
 python demo_try.py
@@ -28,18 +50,60 @@ real work.
 
 ## Which demos need a key?
 
-Several demos are **fully offline** — they use spyv's deterministic checks and
-need no API key at all:
+Most of spyv works with **no key at all** — every deterministic check, every
+measurement, and all of the runtime observation.
 
 | Demo | Needs a key? | Shows |
 |---|---|---|
+| `python live_suite.py` | ❌ no | **everything, against one live agent** |
+| `python policy_demo.py` | ❌ no | tool-call policy — all six rule kinds |
+| `python visibility_demo.py` | ❌ no | how much prompt surface is readable, and why not |
+| `python sarif_demo.py` | ❌ no | SARIF 2.1.0 export + CI gate (exits non-zero) |
 | `python guard_demo.py` | ❌ no | `@guard` catches secrets/PII leaked in real agent output at runtime |
 | `python checkers_demo.py` | ❌ no | the deterministic checker tier + custom rules + allowlist |
+| `python track_agent.py` | ❌ no | `@watch` logs every agent call |
 | `python example.py` | partial | full API tour (LLM sections skip without a key) |
 | `python analyze_prompt.py` | ✅ yes | five-pillar audit of one prompt |
 | `python scan_demo.py` | ✅ yes | scan a whole project |
 | `python redteam_demo.py` | ✅ yes | fire the OWASP attack corpus |
 | `python live_demo.py` | ✅ yes | interactive attack chat |
+
+### ⭐ Tool-call policy (no key)
+
+```bash
+python policy_demo.py
+```
+
+A prompt audit tells you what the agent was *told*. A policy tells you what it
+*did*. The second is decidable, so it needs no model: `deny`, `arg_limit`,
+`require_confirmation`, `require_auth`, `require_precedes` and
+`no_secret_in_arguments`, evaluated against a real call trace. Same input, same
+verdict, every run — which is the only kind of check that belongs in a merge gate.
+
+### ⭐ What can a scanner even read? (no key)
+
+```bash
+python visibility_demo.py                 # bundled sample_project/
+python visibility_demo.py ../some-project # or any real codebase
+```
+
+Every prompt-security tool starts by extracting prompts from source, and that
+first step is usually assumed to work. This measures it: each prompt site is
+classified `static`, `partial` or `opaque`, and the opaque ones are broken down
+by *why* they resist. It then runs five analysers of increasing strength to show
+whether a better parser would help, and splits production code from test and
+example code — because scaffolding writes prompts as literals and pooling the
+two flatters the number.
+
+### ⭐ SARIF and CI (no key)
+
+```bash
+python sarif_demo.py      # exits 1 when an unsafe prompt is found
+```
+
+Findings in the format GitHub code scanning already reads, with stable
+fingerprints so a scanner can say *new since last run* instead of re-reporting
+everything on every commit.
 
 ## ⭐ Live demo
 

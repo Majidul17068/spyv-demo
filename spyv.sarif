@@ -1,0 +1,206 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "spyv",
+          "version": "0.4.0",
+          "semanticVersion": "0.4.0",
+          "informationUri": "https://github.com/Majidul17068/spyv",
+          "rules": [
+            {
+              "id": "spyv/vulnerability",
+              "name": "PromptVulnerability",
+              "shortDescription": {
+                "text": "Prompt is vulnerable to attack"
+              },
+              "fullDescription": {
+                "text": "The prompt permits an attack such as prompt injection, system-prompt disclosure, PII extraction, or excessive agency. Apply the suggested fix and re-run spyv to confirm the vulnerability no longer reproduces."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-1427",
+                  "owasp-llm"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/missing-guardrail",
+              "name": "MissingGuardrail",
+              "shortDescription": {
+                "text": "Prompt is missing a guardrail"
+              },
+              "fullDescription": {
+                "text": "The prompt does not state a constraint that its role and tools require, such as a scope limit, a refusal rule, or a confirmation step before a destructive action."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "security",
+                  "guardrails"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/secret-in-prompt",
+              "name": "SecretInPrompt",
+              "shortDescription": {
+                "text": "Secret detected in prompt or output"
+              },
+              "fullDescription": {
+                "text": "A credential-shaped string was matched by a deterministic checker, not an LLM judgement. Rotate the credential and load it from the environment instead of embedding it."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-798",
+                  "secrets"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/pii-in-prompt",
+              "name": "PiiInPrompt",
+              "shortDescription": {
+                "text": "Personal data detected in prompt or output"
+              },
+              "fullDescription": {
+                "text": "A deterministic checker matched personal data such as an email address, national identifier, phone number, or a Luhn-valid card number."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-359",
+                  "privacy"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/quality",
+              "name": "PromptQuality",
+              "shortDescription": {
+                "text": "Prompt quality issue"
+              },
+              "fullDescription": {
+                "text": "The prompt has a clarity, specificity, or structure problem that makes model behaviour less predictable."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "quality",
+                  "maintainability"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/optimization",
+              "name": "PromptOptimization",
+              "shortDescription": {
+                "text": "Prompt efficiency issue"
+              },
+              "fullDescription": {
+                "text": "The prompt contains redundant or unnecessary tokens, increasing cost and latency on every call without changing behaviour."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "performance",
+                  "cost"
+                ],
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "spyv/prompt-unsafe",
+              "name": "PromptAuditVerdict",
+              "shortDescription": {
+                "text": "Prompt audit did not reach a shippable verdict"
+              },
+              "fullDescription": {
+                "text": "A project scan audited this prompt and returned fix_first or unsafe. Run 'spyv test' on the file for the full five-pillar report."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/Majidul17068/spyv#readme",
+              "properties": {
+                "tags": [
+                  "security",
+                  "audit"
+                ],
+                "security-severity": "8.0"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "spyv/prompt-unsafe",
+          "ruleIndex": 6,
+          "level": "error",
+          "message": {
+            "text": "Prompt 'SYSTEM_PROMPT' scored 2.0/10 with verdict unsafe and 3 vulnerabilitys. Top fix: Remove the openai_key from the prompt text and read it from the environment at call time."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "agents/leaky_bot.py"
+                },
+                "region": {
+                  "startLine": 15
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "spyvFindingId/v1": "30a8d1a0cd2a40be2db9608f12674a8f"
+          },
+          "properties": {
+            "spyvSeverity": "critical",
+            "verdict": "unsafe",
+            "score": 2.0,
+            "sourceKind": "python_var",
+            "vulnerabilities": 3
+          }
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "columnKind": "utf16CodeUnits"
+    }
+  ]
+}
